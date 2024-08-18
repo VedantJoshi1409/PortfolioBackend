@@ -2,6 +2,8 @@ package org.backend.webbackend.api.model.visualizer;
 
 import java.io.*;
 
+import static org.backend.webbackend.utility.Timestamp.printWithTimestamp;
+
 public class JarOpener {
     private Process process;
     private OutputStream processInput;
@@ -22,10 +24,12 @@ public class JarOpener {
 
     public int[][] getNeurons(String input) {
         try {
-            System.out.println("\nSending Command: " + input);
+            System.out.println();
+            printWithTimestamp("Sending Command: " + input);
             processInput.write((input + "\n").getBytes());
             processInput.flush();
-            System.out.println("Command Sent: " + input+"\n");
+            printWithTimestamp("Command Sent: " + input);
+            System.out.println();
 
             StringBuilder output = new StringBuilder();
             String line;
@@ -43,7 +47,7 @@ public class JarOpener {
                 output.append(line).append("\n");
                 blocks = line.split(" ");
 
-//                System.out.println(line);
+//                printWithTimestamp(line);
 
                 int counter = 0;
                 for (String block : blocks) {
@@ -55,7 +59,9 @@ public class JarOpener {
                     }
                 }
             }
-            System.out.println("\nData received:\n\n" + output + "\n");
+            System.out.println();
+            printWithTimestamp("Data received:");
+            System.out.println("\n"+output+"\n");
 
             return out;
 

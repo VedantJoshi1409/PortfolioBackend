@@ -2,6 +2,8 @@ package org.backend.webbackend.api.model.engine;
 
 import java.io.*;
 
+import static org.backend.webbackend.utility.Timestamp.printWithTimestamp;
+
 public class JarOpener {
     private Process process;
     private final OutputStream processInput;
@@ -22,10 +24,12 @@ public class JarOpener {
 
     public String sendCommand(String input, String end) {
         try {
-            System.out.println("\nSending command: " + input);
+            System.out.println();
+            printWithTimestamp("Sending command: " + input);
             processInput.write((input + "\n").getBytes());
             processInput.flush();
-            System.out.println("Command sent: " + input+"\n");
+            printWithTimestamp("Command sent: " + input);
+            System.out.println();
 
             StringBuilder output = new StringBuilder();
             String line;
@@ -37,7 +41,9 @@ public class JarOpener {
                         break;
                     }
                 }
-                System.out.println("\nData received:\n\n" + output + "\n");
+                System.out.println();
+                printWithTimestamp("Data received:");
+                System.out.println("\n" + output + "\n");
 
                 return output.toString().trim();
             }

@@ -2,6 +2,8 @@ package org.backend.webbackend.api.model.engine;
 
 import java.util.HashMap;
 
+import static org.backend.webbackend.utility.Timestamp.printWithTimestamp;
+
 public class Engine {
     public final String PATH = "Bitterfish.jar";
     private HashMap<String, JarOpener> sessions;
@@ -11,16 +13,16 @@ public class Engine {
     }
 
     public void newSession(String sessionId) {
-        System.out.println("New session: " + sessionId);
+        printWithTimestamp("New session: " + sessionId);
         if (!sessions.containsKey(sessionId)) {
             sessions.put(sessionId, new JarOpener(PATH));
         }
     }
 
     public void endSession(String sessionId) {
-        System.out.println("Session ended: " + sessionId);
+        printWithTimestamp("Session ended: " + sessionId);
         sessions.get(sessionId).kill();
-        System.out.println("Process Killed");
+        printWithTimestamp("Process Killed");
         sessions.remove(sessionId);
     }
 

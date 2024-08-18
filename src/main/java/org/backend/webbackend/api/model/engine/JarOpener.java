@@ -4,8 +4,8 @@ import java.io.*;
 
 public class JarOpener {
     private Process process;
-    private OutputStream processInput;
-    private BufferedReader processOutput;
+    private final OutputStream processInput;
+    private final BufferedReader processOutput;
 
     public JarOpener(String path) {
         ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", path);
@@ -22,8 +22,10 @@ public class JarOpener {
 
     public String sendCommand(String input, String end) {
         try {
+            System.out.println("\nSending command: " + input);
             processInput.write((input + "\n").getBytes());
             processInput.flush();
+            System.out.println("Command sent: " + input+"\n");
 
             StringBuilder output = new StringBuilder();
             String line;
@@ -35,6 +37,7 @@ public class JarOpener {
                         break;
                     }
                 }
+                System.out.println("\nData received:\n\n" + output + "\n");
 
                 return output.toString().trim();
             }

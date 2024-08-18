@@ -22,15 +22,18 @@ public class JarOpener {
 
     public int[][] getNeurons(String input) {
         try {
+            System.out.println("\nSending Command: " + input);
             processInput.write((input + "\n").getBytes());
             processInput.flush();
+            System.out.println("Command Sent: " + input+"\n");
 
             StringBuilder output = new StringBuilder();
             String line;
             String[] blocks;
             int[][] out = new int[9][32];
 
-            while (!(line = processOutput.readLine()).split(" ")[0].equals("fc_0:")) {}
+            while (!(line = processOutput.readLine()).split(" ")[0].equals("fc_0:")) {
+            }
 
             for (int i = 0; i < 9; i++) {
                 if (i != 0) {
@@ -40,7 +43,7 @@ public class JarOpener {
                 output.append(line).append("\n");
                 blocks = line.split(" ");
 
-                System.out.println(line);
+//                System.out.println(line);
 
                 int counter = 0;
                 for (String block : blocks) {
@@ -48,11 +51,11 @@ public class JarOpener {
                         int temp = Integer.parseInt(block);
                         out[i][counter] = temp;
                         counter++;
-                    } catch (NumberFormatException _) {
+                    } catch (NumberFormatException e) {
                     }
                 }
             }
-//            System.out.println(output);
+            System.out.println("\nData received:\n\n" + output + "\n");
 
             return out;
 

@@ -11,11 +11,16 @@ public class Engine {
     }
 
     public void newSession(String sessionId) {
-        sessions.put(sessionId, new JarOpener(PATH));
+        System.out.println("New session: " + sessionId);
+        if (!sessions.containsKey(sessionId)) {
+            sessions.put(sessionId, new JarOpener(PATH));
+        }
     }
 
     public void endSession(String sessionId) {
+        System.out.println("Session ended: " + sessionId);
         sessions.get(sessionId).kill();
+        System.out.println("Process Killed");
         sessions.remove(sessionId);
     }
 

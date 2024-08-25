@@ -34,12 +34,12 @@ public class JarOpener {
             StringBuilder output = new StringBuilder();
             String line;
             String[] blocks;
-            int[][] out = new int[9][32];
+            int[][] out = new int[14][32];
 
             while (!(line = processOutput.readLine()).split(" ")[0].equals("fc_0:")) {
             }
 
-            for (int i = 0; i < 9; i++) {
+            for (int i = 0; i < out.length; i++) {
                 if (i != 0) {
                     line = processOutput.readLine();
                 }

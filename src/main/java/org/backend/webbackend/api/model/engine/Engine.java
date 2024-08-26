@@ -6,17 +6,21 @@ import static org.backend.webbackend.utility.Timestamp.printWithTimestamp;
 
 public class Engine {
     public final String PATH = "Bitterfish.jar";
-    private HashMap<String, JarOpener> sessions;
+    public HashMap<String, JarOpener> sessions;
+    SessionCloser sessionCloser;
 
     public Engine() {
         sessions = new HashMap<>();
+        sessionCloser = new SessionCloser(this, 15000);
+        sessionCloser.start();
     }
 
     public void newSession(String sessionId) {
         printWithTimestamp("New session: " + sessionId);
         if (!sessions.containsKey(sessionId)) {
-            sessions.put(sessionId, new JarOpener(PATH));
+            sessions.put(sessionId, new JarOpener(PATH, sessionId));
         }
+        printWithTimestamp("Process Created: " + (sessions.get(sessionId) != null));
     }
 
     public void endSession(String sessionId) {
@@ -28,6 +32,10 @@ public class Engine {
 
     public String parseCommand(String command, String sessionId) {
         JarOpener jarOpener = sessions.get(sessionId);
+
+        if (command.equals("refresh")) {
+            jarOpener.refresh();
+        }
 
         if (command.equals("uci")) {
             if (jarOpener.sendCommand("uci", "uciok") != null) {

@@ -9,7 +9,11 @@ public class JarOpener {
     private final OutputStream processInput;
     private final BufferedReader processOutput;
 
-    public JarOpener(String path) {
+    private long lastCommand;
+    public String sessionId;
+
+    public JarOpener(String path, String sessionId) {
+        this.sessionId = sessionId;
         ProcessBuilder processBuilder = new ProcessBuilder("java", "-jar", path);
         processBuilder.redirectErrorStream(true);
         try {
@@ -20,9 +24,13 @@ public class JarOpener {
 
         processInput = process.getOutputStream();
         processOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+        lastCommand = System.currentTimeMillis();
     }
 
     public String sendCommand(String input, String end) {
+        refresh();
+
         try {
             System.out.println();
             printWithTimestamp("Sending command: " + input);
@@ -55,5 +63,17 @@ public class JarOpener {
 
     public void kill() {
         process.destroy();
+    }
+
+    public void refresh() {
+        System.out.println();
+        printWithTimestamp("Refreshed " + sessionId);
+        lastCommand  = System.currentTimeMillis();
+    }
+
+    public boolean sessionCheck() {
+        long time = System.currentTimeMillis()-lastCommand;
+        printWithTimestamp(sessionId + ": Last command was " + time + " ms ago");
+        return time > 75000;
     }
 }

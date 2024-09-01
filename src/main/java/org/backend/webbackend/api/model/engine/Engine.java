@@ -32,33 +32,31 @@ public class Engine {
 
     public String parseCommand(String command, String sessionId) {
         JarOpener jarOpener = sessions.get(sessionId);
+        String[] blocks = command.split(" ");
 
-        if (command.equals("refresh")) {
-            jarOpener.refresh();
-        }
-
-        if (command.equals("uci")) {
-            if (jarOpener.sendCommand("uci", "uciok") != null) {
-                return "uciok";
+        switch (blocks[0]) {
+            case "refresh" -> jarOpener.refresh();
+            case "uci" -> {
+                if (jarOpener.sendCommand("uci", "uciok") != null) {
+                    return "uciok";
+                }
+            }
+            case "ucinewgame" -> {
+                return jarOpener.sendCommand("ucinewgame", null);
+            }
+            case "position" -> {
+                return jarOpener.sendCommand(command, null);
+            }
+            case "moves" -> {
+                return jarOpener.sendCommand(command, "movelist");
+            }
+            case "go" -> {
+                String move = jarOpener.sendCommand(command, "bestmove");
+                String[] temp = move.split("\n");
+                return temp[temp.length - 2] + "\n" + temp[temp.length - 1];
             }
         }
 
-        if (command.equals("ucinewgame")) {
-            jarOpener.sendCommand("ucinewgame", null);
-            return null;
-        }
-
-        String[] blocks = command.split(" ");
-        if (blocks[0].equals("position")) {
-            jarOpener.sendCommand(command, null);
-            return null;
-        }
-
-        if (blocks[0].equals("go")) {
-            String move = jarOpener.sendCommand(command, "bestmove");
-            String[] temp = move.split("\n");
-            return temp[temp.length-1];
-        }
         return null;
     }
 }

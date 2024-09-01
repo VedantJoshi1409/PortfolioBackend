@@ -29,7 +29,7 @@ public class EngineController {
     public String startSession(HttpSession session) {
         sessions.add(session);
         engineService.startSession(session.getId());
-        return "Session started with ID: " + session.getId();
+        return session.getId();
     }
 
     @CrossOrigin(origins = "*")

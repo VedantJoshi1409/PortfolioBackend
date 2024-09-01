@@ -28,37 +28,38 @@ public class JarOpener {
         lastCommand = System.currentTimeMillis();
     }
 
-    public String sendCommand(String input, String end) {
+    public String sendCommand(String command, String expectedResult) {
         refresh();
 
         try {
-            System.out.println();
-            printWithTimestamp("Sending command: " + input);
-            processInput.write((input + "\n").getBytes());
-            processInput.flush();
-            printWithTimestamp("Command sent: " + input);
-            System.out.println();
-
-            StringBuilder output = new StringBuilder();
-            String line;
-
-            if (!(input.equals("ucinewgame") || input.split(" ")[0].equals("position"))) {
-                while ((line = processOutput.readLine()) != null) {
-                    output.append(line).append("\n");
-                    if (line.split(" ")[0].equals(end)) {
-                        break;
-                    }
-                }
-                System.out.println();
-                printWithTimestamp("Data received:");
-                System.out.println("\n" + output + "\n");
-
-                return output.toString().trim();
-            }
+            printWithTimestamp("Sending command: " + command);
+            return sendCommand(processInput, processOutput, command, expectedResult);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static String sendCommand(OutputStream processInput, BufferedReader processOutput, String command, String expectedResponse) throws IOException {
+        processInput.write((command + "\n").getBytes());
+        processInput.flush();
+        if (expectedResponse != null) {
+            return waitForResponse(processOutput, expectedResponse);
+        }
+        return null;
+    }
+
+    private static String waitForResponse(BufferedReader processOutput, String expectedResponse) throws IOException {
+        String line;
+        String output = "";
+        while ((line = processOutput.readLine()) != null) {
+            System.out.println(line);
+            output += line + "\n";
+            if (line.contains(expectedResponse)) {
+                break;
+            }
+        }
+        return output;
     }
 
     public void kill() {
@@ -68,11 +69,11 @@ public class JarOpener {
     public void refresh() {
         System.out.println();
         printWithTimestamp("Refreshed " + sessionId);
-        lastCommand  = System.currentTimeMillis();
+        lastCommand = System.currentTimeMillis();
     }
 
     public boolean sessionCheck() {
-        long time = System.currentTimeMillis()-lastCommand;
+        long time = System.currentTimeMillis() - lastCommand;
         printWithTimestamp(sessionId + ": Last command was " + time + " ms ago");
         return time > 75000;
     }

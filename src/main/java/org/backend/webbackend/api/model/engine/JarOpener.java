@@ -75,6 +75,6 @@ public class JarOpener {
     public boolean sessionCheck() {
         long time = System.currentTimeMillis() - lastCommand;
         printWithTimestamp(sessionId + ": Last command was " + time + " ms ago");
-        return time > 75000;
+        return time > 45000;
     }
 }
